@@ -23,7 +23,7 @@ def index():
 @main.route("/home")
 @loginRequired
 def home():
-    content = requests.get("http://192.168.178.29:5001/api/termine").json()["appointments"]
+    content = requests.get("http://127.0.0.1:5000/api/termine").json()["appointments"]
     termine = []
 
     for termin in content:
@@ -34,21 +34,21 @@ def home():
 @main.route("/new")
 @loginRequired
 def new():
-    arten = requests.get("http://192.168.178.29:5001/api/terminart").json()["appointment_types"]
-    kontakte = requests.get("http://192.168.178.29:5001/api/kontakt").json()["contacts"]
-    produkte = requests.get("http://192.168.178.29:5001/api/products").json()["products"]
+    arten = requests.get("http://127.0.0.1:5000/api/terminart").json()["appointment_types"]
+    kontakte = requests.get("http://127.0.0.1:5000/api/kontakt").json()["contacts"]
+    produkte = requests.get("http://127.0.0.1:5000/api/products").json()["products"]
     return render_template("new.html", arten=arten, kontakte=kontakte, produkte=produkte)
 
 @main.route("/details/<id>")
 @loginRequired
 def details(id):
-    termin = requests.get("http://192.168.178.29:5001/api/termine/"+ id).json()
-    arten = requests.get("http://192.168.178.29:5001/api/terminart").json()["appointment_types"]
-    kontakte = requests.get("http://192.168.178.29:5001/api/kontakt").json()["contacts"]
-    teilnehmer = requests.get("http://192.168.178.29:5001/api/teilnehmer").json()["participants"]
-    produkte = requests.get("http://192.168.178.29:5001/api/products").json()["products"]
-    auftraege = requests.get("http://192.168.178.29:5001/api/auftrag").json()["orders"]
-    auftragspositionen = requests.get("http://192.168.178.29:5001/api/auftragsposition").json()["order_items"]
+    termin = requests.get("http://127.0.0.1:5000/api/termine/"+ id).json()
+    arten = requests.get("http://127.0.0.1:5000/api/terminart").json()["appointment_types"]
+    kontakte = requests.get("http://127.0.0.1:5000/api/kontakt").json()["contacts"]
+    teilnehmer = requests.get("http://127.0.0.1:5000/api/teilnehmer").json()["participants"]
+    produkte = requests.get("http://127.0.0.1:5000/api/products").json()["products"]
+    auftraege = requests.get("http://127.0.0.1:5000/api/auftrag").json()["orders"]
+    auftragspositionen = requests.get("http://127.0.0.1:5000/api/auftragsposition").json()["order_items"]
     terminTeilnehmer = []
     positionen = []
 
@@ -73,7 +73,7 @@ def details(id):
 @main.route("/protocol/<id>")
 @loginRequired
 def protocol(id):
-    protokolle = requests.get("http://192.168.178.29:5001/api/protokoll").json()["protocols"]
+    protokolle = requests.get("http://127.0.0.1:5000/api/protokoll").json()["protocols"]
     protokoll = ""
 
     for element in protokolle:

@@ -198,7 +198,7 @@
             // ------------------------
             // Adresse
             // ------------------------
-            const adresseRes = await fetch("http://127.0.0.1:5001/api/adresse", {
+            const adresseRes = await fetch("http://127.0.0.1:5000/api/adresse", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -221,7 +221,7 @@
             if (rolle === "Unternehmen") {
                 if (!umsatz.value.trim()) throw new Error("Umsatz fehlt");
 
-                const res = await fetch("http://127.0.0.1:5001/api/unternehmen", {
+                const res = await fetch("http://127.0.0.1:5000/api/unternehmen", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -239,7 +239,7 @@
                 if (!geburtsdatum.value || !titel.value.trim())
                     throw new Error("Personendaten unvollständig");
 
-                const res = await fetch("http://127.0.0.1:5001/api/person", {
+                const res = await fetch("http://127.0.0.1:5000/api/person", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -257,7 +257,7 @@
             // ------------------------
             // Kontakt
             // ------------------------
-            const kontaktRes = await fetch("http://127.0.0.1:5001/api/kontakt", {
+            const kontaktRes = await fetch("http://127.0.0.1:5000/api/kontakt", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
