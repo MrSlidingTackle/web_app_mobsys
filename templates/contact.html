@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Termin anlegen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black min-h-screen">
+
+<!-- Taskleiste -->
+<header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6">
+    <h1 class="text-white text-xl font-semibold">
+        Kontakt anlegen
+    </h1>
+</header>
+
+<!-- Content -->
+<main class="pt-28 flex justify-center pb-20">
+    <section class="bg-gray-400 w-4/5 max-w-4xl rounded-lg p-6 space-y-6">
+
+        <!-- ================= Kontakte & Teilnehmer ================= -->
+        <div class="bg-white rounded-md p-5 space-y-5">
+            <h2 class="text-xl font-bold text-gray-800">Kontakte & Teilnehmer</h2>
+
+            <div class="space-y-4 text-sm">
+
+                <div>
+                    <label class="block font-medium text-gray-700">Name</label>
+                    <input type="text" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <!-- Adresse -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-medium text-gray-700">PLZ</label>
+                        <input type="text" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">Ortsname</label>
+                        <input type="text" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">Strasse</label>
+                        <input type="text" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">Hausnummer</label>
+                        <input type="text" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">Telefonnummer</label>
+                        <input type="text" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">E-Mail</label>
+                        <input type="text" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+
+                <!-- Rolle -->
+                <div>
+                    <label class="block font-medium text-gray-700">Rolle</label>
+                    <select id="rolleSelect" class="w-full border rounded px-3 py-2">
+                        <option value="">Bitte auswählen</option>
+                        <option value="Unternehmen">Unternehmen</option>
+                        <option value="Person">Person</option>
+                    </select>
+                </div>
+
+                <!-- Unternehmen -->
+                <div id="unternehmenCard" class="border rounded-md p-4 space-y-2">
+                    <h3 class="font-semibold text-gray-700 text-sm">
+                        Angaben für Unternehmen
+                    </h3>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">Umsatz</label>
+                        <input type="text" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+
+                <!-- Person -->
+                <div id="personCard" class="border rounded-md p-4 space-y-2">
+                    <h3 class="font-semibold text-gray-700 text-sm">
+                        Angaben für Person
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-medium text-gray-700">Geburtsdatum</label>
+                            <input type="date" class="w-full border rounded px-3 py-2">
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700">Titel</label>
+                            <input type="text" class="w-full border rounded px-3 py-2">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= Aktionen ================= -->
+        <div class="flex justify-end gap-4">
+            <a href="/home">
+                <button class="px-6 py-2 rounded bg-gray-600 text-white">
+                    Abbrechen
+                </button>
+            </a>
+            <button onclick="saveContact()" class="px-6 py-2 rounded bg-blue-600 text-white font-semibold">
+                Kontakt speichern
+            </button>
+        </div>
+
+    </section>
+</main>
+<script>
+    const rolleSelect = document.getElementById("rolleSelect");
+    const unternehmenCard = document.getElementById("unternehmenCard");
+    const personCard = document.getElementById("personCard");
+
+    function setDisabled(card, disabled) {
+        card.classList.toggle("opacity-50", disabled);
+        card.classList.toggle("pointer-events-none", disabled);
+
+        card.querySelectorAll("input, select, textarea").forEach(el => {
+            el.disabled = disabled;
+            el.value = ""
+        });
+    }
+
+    function updateRolle() {
+        const value = rolleSelect.value;
+
+        if (value === "Unternehmen") {
+            setDisabled(unternehmenCard, false);
+            setDisabled(personCard, true);
+        } 
+        else if (value === "Person") {
+            setDisabled(unternehmenCard, true);
+            setDisabled(personCard, false);
+        } 
+        else {
+            setDisabled(unternehmenCard, true);
+            setDisabled(personCard, true);
+        }
+    }
+
+    rolleSelect.addEventListener("change", updateRolle);
+
+    // Initialzustand
+    updateRolle();
+
+    async function saveContact() {
+        try {
+            const inputs = document.querySelectorAll("input");
+            const rolle = rolleSelect.value;
+
+            const [
+                name,
+                plz,
+                ortsname,
+                strasse,
+                hausnummer,
+                telefon,
+                email,
+                umsatz,
+                geburtsdatum,
+                titel
+            ] = inputs;
+
+            // ------------------------
+            // Pflichtfelder
+            // ------------------------
+            const requiredBase = {
+                Name: name.value,
+                PLZ: plz.value,
+                Ortsname: ortsname.value,
+                Strasse: strasse.value,
+                Hausnummer: hausnummer.value,
+                Telefonnummer: telefon.value,
+                "E-Mail": email.value
+            };
+
+            for (const [field, value] of Object.entries(requiredBase)) {
+                if (!value.trim()) throw new Error(`${field} muss ausgefüllt sein`);
+            }
+
+            if (!rolle) throw new Error("Rolle muss ausgewählt sein");
+
+            // ------------------------
+            // Adresse
+            // ------------------------
+            const adresseRes = await fetch("http://127.0.0.1:5001/api/adresse", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    plz: plz.value,
+                    ortsname: ortsname.value,
+                    strasse: strasse.value,
+                    hausnr: hausnummer.value
+                })
+            });
+
+            if (!adresseRes.ok) throw new Error("Adresse konnte nicht gespeichert werden");
+            const adresse = await adresseRes.json();
+
+            let unternehmenId = null;
+            let personId = null;
+
+            // ------------------------
+            // Unternehmen / Person
+            // ------------------------
+            if (rolle === "Unternehmen") {
+                if (!umsatz.value.trim()) throw new Error("Umsatz fehlt");
+
+                const res = await fetch("http://127.0.0.1:5001/api/unternehmen", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: name.value,
+                        adresse_id: adresse.id,
+                        umsatz: umsatz.value
+                    })
+                });
+
+                if (!res.ok) throw new Error("Unternehmen konnte nicht gespeichert werden");
+                unternehmenId = Number((await res.json()).id);
+            }
+
+            if (rolle === "Person") {
+                if (!geburtsdatum.value || !titel.value.trim())
+                    throw new Error("Personendaten unvollständig");
+
+                const res = await fetch("http://127.0.0.1:5001/api/person", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: name.value,
+                        adresse_id: adresse.id,
+                        geburtsdatum: geburtsdatum.value,
+                        titel: titel.value
+                    })
+                });
+
+                if (!res.ok) throw new Error("Person konnte nicht gespeichert werden");
+                personId = Number((await res.json()).id);
+            }
+
+            // ------------------------
+            // Kontakt
+            // ------------------------
+            const kontaktRes = await fetch("http://127.0.0.1:5001/api/kontakt", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: email.value,
+                    telefonnummer: telefon.value,
+                    rolle: rolle,
+                    person_id: personId,
+                    unternehmen_id: unternehmenId,
+                    ref_typ: rolle
+                })
+            });
+
+            if (!kontaktRes.ok) throw new Error("Kontakt konnte nicht gespeichert werden");
+
+            alert("Kontakt erfolgreich gespeichert");
+        } catch (err) {
+            alert(err.message);
+            console.error(err);
+        }
+    }
+</script>
+
+</body>
+</html>

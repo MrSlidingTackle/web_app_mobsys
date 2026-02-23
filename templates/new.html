@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black min-h-screen">
+
+<!-- Taskleiste -->
+<header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6">
+    <h1 class="text-white text-xl font-semibold">
+        Details
+    </h1>
+</header>
+
+<!-- Content -->
+<main class="pt-28 flex justify-center pb-20">
+    <section class="bg-gray-400 w-4/5 max-w-4xl rounded-lg p-6 space-y-6">
+
+        <!-- ================= Termindaten ================= -->
+        <div class="bg-white rounded-md p-5 space-y-4">
+            <h2 class="text-xl font-bold text-gray-800">Termindaten</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
+                <div>
+                    <label class="block font-medium text-gray-700">Terminart</label>
+                    <select class="w-full border rounded px-3 py-2">
+                        <option>Bitte auswählen</option>
+                        {% for art in arten %}
+                        <option value="{{ art.id }}">{{ art.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-gray-700">Titel</label>
+                    <input type="text" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-gray-700">Ort</label>
+                    <input type="text" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-gray-700">Start</label>
+                    <input type="datetime-local" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-gray-700">Ende</label>
+                    <input type="datetime-local" class="w-full border rounded px-3 py-2">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= Kontakte & Teilnehmer ================= -->
+        <div class="bg-white rounded-md p-5 space-y-5">
+            <h2 class="text-xl font-bold text-gray-800">Kontakte & Teilnehmer</h2>
+
+            <div class="space-y-4 text-sm">
+
+                <div>
+                    <label class="block font-medium text-gray-700 mb-1">
+                        Kontakt auswählen (bestehend)
+                    </label>
+                
+                    <div class="flex gap-2">
+                        <select id="kontaktSelect" class="flex-1 border rounded px-3 py-2">
+                            <option value="-1">Kontakt auswählen…</option>
+                            {% for kontakt in kontakte %}
+                                <option value="{{ kontakt.id }}" data-ref-typ="{{ kontakt.ref_typ }}">{{ kontakt.referenz_data.name }}</option>
+                            {% endfor %}
+                        </select>
+                
+                        <button
+                            id="kontaktAddBtn"
+                            type="button"
+                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:bg-blue-700 transition"
+                        >
+                            Hinzufügen
+                        </button>
+                        <p id="kontaktError" class="text-red-600 text-sm mt-1 hidden"></p>
+                    </div>
+                </div>
+
+                <!-- Teilnehmer ListView -->
+                <div>
+                    <label class="block font-medium text-gray-700 mb-2">
+                        Hinzugefügte Kontakte
+                    </label>
+
+                    <div 
+                        id="teilnehmerList"
+                        class="border rounded-md divide-y bg-gray-50 text-sm">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Auftrag / Produkte ================= -->
+        <div class="bg-white rounded-md p-5 space-y-4">
+            <h2 class="text-xl font-bold text-gray-800">
+                Auftrag / Produkte (optional)
+            </h2>
+        
+            <div class="space-y-4 text-sm">
+        
+                <!-- Produkt auswählen -->
+                <div>
+                    <label class="block font-medium text-gray-700 mb-1">
+                        Produkt auswählen
+                    </label>
+                
+                    <div class="flex gap-2">
+                        <select 
+                            id="produktSelect"
+                            class="flex-1 border rounded px-3 py-2">
+                            <option value="-1">Produkt auswählen…</option>
+                            {% for produkt in produkte %}
+                                <option value="{{ produkt.id }}" data-price="{{ produkt.price }}">{{ produkt.name }}</option>
+                            {% endfor %}
+                        </select>
+                
+                        <button
+                            id="produktAddBtn"
+                            type="button"
+                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:bg-blue-700 transition"
+                        >
+                            Hinzufügen
+                        </button>
+                    </div>
+                </div>
+        
+                <!-- Positionen ListView -->
+                <div>
+                    <label class="block font-medium text-gray-700 mb-2">
+                        Positionen
+                    </label>
+                
+                    <div id="positionList" class="border rounded-md divide-y">
+                
+                        <!-- Kopfzeile -->
+                        <div class="grid grid-cols-5 gap-4 px-3 py-2 bg-gray-100 font-medium">
+                            <span>Produkt</span>
+                            <span>Menge</span>
+                            <span class="text-right">Einzelpreis</span>
+                            <span class="text-right">Gesamt</span>
+                            <span class="text-right">Aktion</span>
+                        </div>
+                        
+                
+                        <!-- Position -->
+                
+                        <!-- Summenzeile -->
+                        <div id="sumRow" class="grid grid-cols-5 gap-4 px-3 py-3 bg-gray-50 font-semibold">
+                            <span class="col-span-4 text-right">
+                                Gesamtpreis
+                            </span>
+                            <span id="gesamtPreis" class="text-right">
+                                0 €
+                            </span>
+                        </div>                        
+                    </div>
+                </div>
+                
+        
+            </div>
+        </div>
+        
+
+        <!-- ================= Aktionen ================= -->
+        <div class="flex justify-center gap-4">
+            <a href="/home">
+                <button class="px-6 py-2 rounded bg-[#E74C3C] text-white">
+                    Termin löschen
+                </button>
+            </a>
+            <button onclick="saveData(2)" class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold">
+                Änderung speichern
+            </button>
+            <a href="/protocol">
+                <button class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold">
+                    Protokoll schreiben
+                </button>
+            </a>
+        </div>
+
+    </section>
+</main>
+<script>
+    const kontaktSelect = document.getElementById("kontaktSelect");
+    const kontaktAddBtn = document.getElementById("kontaktAddBtn");
+    const teilnehmerList = document.getElementById("teilnehmerList");
+    const errorBox = document.getElementById("kontaktError");
+    
+    function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.classList.remove("hidden");
+    }
+    
+    function clearError() {
+        errorBox.textContent = "";
+        errorBox.classList.add("hidden");
+    }
+    
+    function kontaktExists(id) {
+        return !!teilnehmerList.querySelector(`[data-kontakt-id="${id}"]`);
+    }
+    
+    kontaktAddBtn.addEventListener("click", () => {
+        clearError();
+    
+        const option = kontaktSelect.options[kontaktSelect.selectedIndex];
+    
+        if (!option || !option.value || option.value=="-1") {
+            showError("Bitte einen Kontakt auswählen.");
+            return;
+        }
+    
+        if (kontaktExists(option.value)) {
+            showError("Dieser Kontakt wurde bereits hinzugefügt.");
+            return;
+        }
+    
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between px-4 py-2";
+        row.dataset.kontaktId = option.value;
+    
+        const refTyp = option.dataset.refTyp || "Kontakt";
+
+        row.innerHTML = `
+            <div class="flex items-center gap-3">
+                <input
+                    type="checkbox"
+                    class="teilnehmer-checkbox"
+                >
+
+                <div>
+                    <p class="font-medium text-gray-800">${option.text}</p>
+                    <p class="text-gray-500 text-xs">${refTyp}</p>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                class="text-red-500 hover:text-red-700 font-semibold remove-kontakt"
+            >
+                Entfernen
+            </button>
+        `;
+    
+        teilnehmerList.appendChild(row);
+    });
+    
+    teilnehmerList.addEventListener("click", e => {
+        if (e.target.classList.contains("remove-kontakt")) {
+            e.target.closest("[data-kontakt-id]").remove();
+        }
+    });
+    const produktSelect = document.getElementById("produktSelect");
+    const produktAddBtn = document.getElementById("produktAddBtn");
+    const positionList = document.getElementById("positionList");
+    const gesamtPreisEl = document.getElementById("gesamtPreis");
+
+    function produktExists(id) {
+        return !!positionList.querySelector(`[data-produkt-id="${id}"]`);
+    }
+
+    function updateGesamtpreis() {
+        let summe = 0;
+
+        positionList.querySelectorAll("[data-position-gesamt]").forEach(el => {
+            summe += parseFloat(el.dataset.positionGesamt);
+        });
+
+        gesamtPreisEl.textContent = summe.toFixed(2) + " €";
+    }
+
+    produktAddBtn.addEventListener("click", () => {
+        const option = produktSelect.options[produktSelect.selectedIndex];
+
+        if (!option || option.value === "-1") {
+            alert("Bitte ein Produkt auswählen.");
+            return;
+        }
+
+        if (produktExists(option.value)) {
+            alert("Dieses Produkt wurde bereits hinzugefügt.");
+            return;
+        }
+
+        const preis = parseFloat(option.dataset.price);
+
+        const row = document.createElement("div");
+        row.className = "grid grid-cols-5 gap-4 px-3 py-2 items-center";
+        row.dataset.produktId = option.value;
+
+        row.innerHTML = `
+            <span>${option.text}</span>
+
+            <input
+                type="number"
+                min="1"
+                value="1"
+                class="w-20 border rounded px-2 py-1 menge-input"
+            >
+
+            <span class="text-right">${preis.toFixed(2)} €</span>
+
+            <span
+                class="text-right position-gesamt"
+                data-position-gesamt="${preis}"
+            >
+                ${preis.toFixed(2)} €
+            </span>
+
+            <button
+                type="button"
+                class="text-red-500 hover:text-red-700 font-semibold text-sm remove-produkt"
+            >
+                Entfernen
+            </button>
+        `;
+
+        const sumRow = document.getElementById("sumRow");
+        positionList.insertBefore(row, sumRow);
+
+        updateGesamtpreis();
+    });
+    positionList.addEventListener("input", e => {
+        if (!e.target.classList.contains("menge-input")) return;
+
+        const row = e.target.closest("[data-produkt-id]");
+        const preis = parseFloat(
+            row.querySelector("span.text-right").textContent
+        );
+
+        const menge = parseInt(e.target.value || 1);
+        const gesamt = preis * menge;
+
+        const gesamtEl = row.querySelector(".position-gesamt");
+        gesamtEl.textContent = gesamt.toFixed(2) + " €";
+        gesamtEl.dataset.positionGesamt = gesamt;
+
+        updateGesamtpreis();
+    });
+
+    positionList.addEventListener("click", e => {
+        if (e.target.classList.contains("remove-produkt")) {
+            e.target.closest("[data-produkt-id]").remove();
+            updateGesamtpreis();
+        }
+    });
+    teilnehmerList.addEventListener("change", e => {
+        if (!e.target.classList.contains("teilnehmer-checkbox")) return;
+
+        // alle anderen Checkboxen deaktivieren
+        teilnehmerList
+            .querySelectorAll(".teilnehmer-checkbox")
+            .forEach(cb => {
+                if (cb !== e.target) cb.checked = false;
+            });
+    });
+
+    function collectTerminData() {
+
+        /* ================= Termindaten ================= */
+        const terminSection = document
+            .querySelector("h2")
+            .closest(".bg-white");
+
+        const selects = terminSection.querySelectorAll("select");
+        const textInputs = terminSection.querySelectorAll('input[type="text"]');
+        const datetimeInputs = terminSection.querySelectorAll('input[type="datetime-local"]');
+
+        const terminart_id = selects[0]?.value;
+        const titel = textInputs[0]?.value.trim();
+        const ort = textInputs[1]?.value.trim();
+        const start = datetimeInputs[0]?.value;
+        const ende = datetimeInputs[1]?.value;
+
+        /* ================= Validierung ================= */
+        if (!terminart_id || terminart_id === "Bitte auswählen") {
+            throw new Error("Bitte eine Terminart auswählen.");
+        }
+        if (!titel) throw new Error("Titel darf nicht leer sein.");
+        if (!ort) throw new Error("Ort darf nicht leer sein.");
+        if (!start) throw new Error("Startdatum fehlt.");
+        if (!ende) throw new Error("Enddatum fehlt.");
+        if (new Date(start) > new Date(ende)) {
+            throw new Error("Start darf nicht nach Ende liegen.");
+        }
+
+        /* ================= Kontakte ================= */
+        const kontakte = [];
+
+        document
+            .querySelectorAll("#teilnehmerList [data-kontakt-id]")
+            .forEach(row => {
+
+                const kontaktId = parseInt(row.dataset.kontaktId);
+                const checkbox = row.querySelector(".teilnehmer-checkbox");
+
+                if (isNaN(kontaktId) || !checkbox) return;
+
+                kontakte.push({
+                    kontakt_id: kontaktId,
+                    ausgewaehlt: checkbox.checked
+                });
+            });
+
+        /* ================= Produkte (optional) ================= */
+        const produkte = [];
+        document
+            .querySelectorAll("#positionList [data-produkt-id]")
+            .forEach(el => {
+                const id = parseInt(el.dataset.produktId);
+                if (!isNaN(id)) produkte.push(id);
+            });
+
+        return {
+            termindaten: {
+                terminart_id: parseInt(terminart_id),
+                titel,
+                ort,
+                start,
+                ende
+            },
+            kontakte,
+            produkte
+        };
+    };
+
+    async function saveData(uid) {
+        try {
+            const data = collectTerminData();
+
+            /* ================= 1. TERMIN ================= */
+            const terminRes = await fetch("http://127.0.0.1:5001/api/termine", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    title: data.termindaten.titel,
+                    ort: data.termindaten.ort,
+                    art_id: data.termindaten.terminart_id,
+                    start: data.termindaten.start,
+                    ende: data.termindaten.ende,
+                    uid: uid
+                })
+            });
+
+            if (!terminRes.ok) throw new Error("Termin konnte nicht erstellt werden");
+            const termin = await terminRes.json();
+            const terminId = termin.id;
+
+            /* ================= 2. PROTOKOLL (Platzhalter) ================= */
+            await fetch("http://127.0.0.1:5001/api/protokoll", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    datum: data.termindaten.start,
+                    text: "",
+                    dauer: 0,
+                    tldr: "",
+                    termin_id: terminId
+                })
+            });
+
+            let haupt = "";
+            /* ================= 3. TEILNEHMER ================= */
+            for (const kontakt of data.kontakte) {
+                console.log(kontakt)
+                if (kontakt.ausgewaehlt){
+                    haupt = kontakt["kontakt_id"]
+                };
+                await fetch("http://127.0.0.1:5001/api/teilnehmer", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        kontakt_id: kontakt.kontakt_id,
+                        termin_id: terminId,
+                        istHaupt: kontakt.ausgewaehlt
+                    })
+                });
+            }
+
+            /* ================= 4. AUFTRAG + POSITIONEN (optional) ================= */
+            // Auftrag → erster Kontakt als Referenz
+            const auftragRes = await fetch("http://127.0.0.1:5001/api/auftrag", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    bezeichnung: `Termin ${terminId}`,
+                    wichtigkeit_id: 2,      // Platzhalter
+                    kontakt_id: haupt,
+                    termin_id: terminId
+                })
+            });
+
+            if (!auftragRes.ok) throw new Error("Auftrag konnte nicht erstellt werden");
+            const auftrag = await auftragRes.json();
+
+            if (data.produkte.length > 0) {
+                // Auftragspositionen
+                for (const produktId of data.produkte) {
+                    await fetch("http://127.0.0.1:5001/api/auftragsposition", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            auftrag_id: auftrag.id,
+                            produkt_id: produktId
+                        })
+                    });
+                }
+            };
+
+            // KI-Komponente rerank wichtigkeit
+
+            alert("Termin erfolgreich gespeichert 🎉");
+
+        } catch (err) {
+            alert(err.message);
+            console.error(err);
+        }
+    }
+</script>
+    
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black min-h-screen">
+
+    <!-- Taskleiste -->
+    <header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6 space-x-4">
+        <span class="text-white font-semibold text-lg">
+            Taskleiste
+        </span>
+    
+        <a href="/contact" class="text-white text-sm opacity-80 hover:opacity-100 hover:underline">
+            + Kontakt
+        </a>
+    </header>
+
+    <!-- Content Wrapper (Abstand wegen fixer Taskleiste) -->
+    <main class="pt-28 flex justify-center">
+        
+        <!-- Graue Box -->
+        <section class="bg-gray-400 w-3/5 rounded-lg p-6 space-y-4">
+            <!-- Plus Button -->
+            <div class="flex justify-center pt-4">
+                <button
+                    class="w-14 h-14 rounded-full bg-[#4F81BD] text-white text-3xl font-bold
+                        flex items-center justify-center
+                        hover:scale-110 transition shadow-lg"
+                    aria-label="Add"
+                >
+                    <a href="/new" class="mb-2">+</a>
+                </button>
+            </div> 
+            <!-- Weiße Boxen -->
+            {% for termin in termine %}
+            <a href="/details/{{termin.id}}" class="p-5">
+                <div class="bg-white rounded-md p-5 space-y-4 hover:scale-110 transition shadow-xl">
+        
+                    <!-- Überschrift -->
+                    <h2 class="text-lg font-bold text-gray-800 text-center">
+                        {{ termin.title }}
+                    </h2>
+                
+                    <!-- Tabelle -->
+                    <table class="w-full text-sm">
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="py-2 pr-6 font-medium text-gray-700 whitespace-nowrap">
+                                    Ort:
+                                </td>
+                                <td class="py-2 text-gray-900">
+                                    {{ termin.ort }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 pr-6 font-medium text-gray-700 whitespace-nowrap">
+                                    Start:
+                                </td>
+                                <td class="py-2 text-gray-900">
+                                    {{ termin.start }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 pr-6 font-medium text-gray-700 whitespace-nowrap">
+                                    Ende:
+                                </td>
+                                <td class="py-2 text-gray-900">
+                                    {{ termin.ende }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> 
+            </a>
+            {% endfor %}             
+        </section>
+    </main>
+</body>
+</html>

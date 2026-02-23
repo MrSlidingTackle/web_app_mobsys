@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black min-h-screen">
+
+<!-- Taskleiste -->
+<header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6">
+    <h1 class="text-white text-xl font-semibold">
+        Details
+    </h1>
+</header>
+
+<!-- Content -->
+<main class="pt-28 flex justify-center pb-20">
+    <section class="bg-gray-400 w-4/5 max-w-4xl rounded-lg p-6 space-y-6">
+
+        <!-- ================= Termindaten ================= -->
+        <div class="bg-white rounded-md p-5 space-y-4">
+            <h2 class="text-xl font-bold text-gray-800">Termindaten</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+
+                <div>
+                    <label class="block font-medium text-gray-700">Datum</label>
+                    <input id="inputDatum" type="datetime-local" class="w-full border rounded px-3 py-2" value="{{ protokoll.datum }}">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-gray-700">Kurzfassung</label>
+                    <input id="inputTLDR" type="text" class="w-full border rounded px-3 py-2" value="{{ protokoll.tldr }}">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-gray-700">Dauer</label>
+                    <input id="inputDauer" type="text" class="w-full border rounded px-3 py-2" value="{{ protokoll.dauer }}">
+                </div>
+
+                <div class="col-span-3">
+                    <label class="block font-medium text-gray-700">Text</label>
+    
+                    <textarea id="inputText"
+                        rows="20"
+                        class="w-full border rounded px-3 py-2 text-sm bg-gray-100"
+                        placeholder="Protokolltext…">{{ protokoll.text }}
+                    </textarea>
+                </div>
+                
+
+            </div>
+        </div>
+        
+
+        <!-- ================= Aktionen ================= -->
+        <div class="flex justify-center gap-4">
+            <a href="/details/{{ id }}">
+                <button id="btnClose" class="px-6 py-2 rounded bg-gray-600 text-white" value="{{ id }}">
+                    Abbrechen
+                </button>
+            </a>
+            <button id="saveProtocol" class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold" value="{{ protokoll.id }}">
+                Protokoll speichern
+            </button>
+        </div>
+
+    </section>
+</main>
+
+<script>
+    const saveProtocol = document.getElementById("saveProtocol");
+
+    saveProtocol.addEventListener("click", async () => {
+        const protocol_id = saveProtocol.value
+        console.log(protocol_id)
+        const datum = document.getElementById("inputDatum").value
+        const dauer = document.getElementById("inputDauer").value
+        const tldr = document.getElementById("inputTLDR").value
+        const text = document.getElementById("inputText").value
+        const termin_id = document.getElementById("btnClose").value
+
+        const payload = {
+            datum: datum,
+            dauer: dauer,
+            tldr: tldr,
+            text: text,
+            termin_id: termin_id
+        };
+        
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:5001/api/protokoll/${protocol_id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                console.error("Fehler beim Update:", result);
+                alert("Fehler beim Speichern des Protokolls");
+                return;
+            }
+
+            console.log("Protokoll erfolgreich aktualisiert:", result);
+            alert("Protokoll gespeichert");
+        } catch (error) {
+            console.error("Netzwerkfehler:", error);
+            alert("Server nicht erreichbar");
+        }
+    });
+</script>
+</body>
+</html>
