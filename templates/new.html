@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Details</title>
+    <title>Termin anlegen</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -11,7 +11,7 @@
 <!-- Taskleiste -->
 <header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6">
     <h1 class="text-white text-xl font-semibold">
-        Details
+        Termin anleigen
     </h1>
 </header>
 
@@ -60,7 +60,7 @@
 
         <!-- ================= Kontakte & Teilnehmer ================= -->
         <div class="bg-white rounded-md p-5 space-y-5">
-            <h2 class="text-xl font-bold text-gray-800">Kontakte & Teilnehmer</h2>
+            <h2 class="text-xl font-bold text-gray-800">Teilnehmer</h2>
 
             <div class="space-y-4 text-sm">
 
@@ -80,7 +80,7 @@
                         <button
                             id="kontaktAddBtn"
                             type="button"
-                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:bg-blue-700 transition"
+                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:opacity-80 transition"
                         >
                             Hinzufügen
                         </button>
@@ -105,7 +105,7 @@
         <!-- ================= Auftrag / Produkte ================= -->
         <div class="bg-white rounded-md p-5 space-y-4">
             <h2 class="text-xl font-bold text-gray-800">
-                Auftrag / Produkte (optional)
+                Produkte (optional)
             </h2>
         
             <div class="space-y-4 text-sm">
@@ -129,7 +129,7 @@
                         <button
                             id="produktAddBtn"
                             type="button"
-                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:bg-blue-700 transition"
+                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:opacity-80 transition"
                         >
                             Hinzufügen
                         </button>
@@ -176,18 +176,13 @@
         <!-- ================= Aktionen ================= -->
         <div class="flex justify-center gap-4">
             <a href="/home">
-                <button class="px-6 py-2 rounded bg-[#E74C3C] text-white">
-                    Termin löschen
+                <button class="px-6 py-2 rounded bg-gray-600 text-white hover:opacity-80 transition">
+                    Abbrechen
                 </button>
             </a>
-            <button onclick="saveData(2)" class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold">
-                Änderung speichern
+            <button onclick="saveData(2)" class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:opacity-80 transition">
+                Termin anlegen
             </button>
-            <a href="/protocol">
-                <button class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold">
-                    Protokoll schreiben
-                </button>
-            </a>
         </div>
 
     </section>
