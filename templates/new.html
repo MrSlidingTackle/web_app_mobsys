@@ -2,24 +2,20 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Details</title>
+    <title>Termin anlegen</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-black min-h-screen">
-
-<!-- Taskleiste -->
+    
 <header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6">
     <h1 class="text-white text-xl font-semibold">
-        Details
+        Termin anleigen
     </h1>
 </header>
 
-<!-- Content -->
 <main class="pt-28 flex justify-center pb-20">
     <section class="bg-gray-400 w-4/5 max-w-4xl rounded-lg p-6 space-y-6">
-
-        <!-- ================= Termindaten ================= -->
         <div class="bg-white rounded-md p-5 space-y-4">
             <h2 class="text-xl font-bold text-gray-800">Termindaten</h2>
 
@@ -58,9 +54,8 @@
             </div>
         </div>
 
-        <!-- ================= Kontakte & Teilnehmer ================= -->
         <div class="bg-white rounded-md p-5 space-y-5">
-            <h2 class="text-xl font-bold text-gray-800">Kontakte & Teilnehmer</h2>
+            <h2 class="text-xl font-bold text-gray-800">Teilnehmer</h2>
 
             <div class="space-y-4 text-sm">
 
@@ -80,7 +75,7 @@
                         <button
                             id="kontaktAddBtn"
                             type="button"
-                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:bg-blue-700 transition"
+                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:opacity-80 transition"
                         >
                             Hinzufügen
                         </button>
@@ -88,7 +83,6 @@
                     </div>
                 </div>
 
-                <!-- Teilnehmer ListView -->
                 <div>
                     <label class="block font-medium text-gray-700 mb-2">
                         Hinzugefügte Kontakte
@@ -102,15 +96,13 @@
             </div>
         </div>
 
-        <!-- ================= Auftrag / Produkte ================= -->
         <div class="bg-white rounded-md p-5 space-y-4">
             <h2 class="text-xl font-bold text-gray-800">
-                Auftrag / Produkte (optional)
+                Produkte (optional)
             </h2>
         
             <div class="space-y-4 text-sm">
         
-                <!-- Produkt auswählen -->
                 <div>
                     <label class="block font-medium text-gray-700 mb-1">
                         Produkt auswählen
@@ -129,14 +121,13 @@
                         <button
                             id="produktAddBtn"
                             type="button"
-                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:bg-blue-700 transition"
+                            class="px-4 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:opacity-80 transition"
                         >
                             Hinzufügen
                         </button>
                     </div>
                 </div>
         
-                <!-- Positionen ListView -->
                 <div>
                     <label class="block font-medium text-gray-700 mb-2">
                         Positionen
@@ -144,7 +135,6 @@
                 
                     <div id="positionList" class="border rounded-md divide-y">
                 
-                        <!-- Kopfzeile -->
                         <div class="grid grid-cols-5 gap-4 px-3 py-2 bg-gray-100 font-medium">
                             <span>Produkt</span>
                             <span>Menge</span>
@@ -153,10 +143,6 @@
                             <span class="text-right">Aktion</span>
                         </div>
                         
-                
-                        <!-- Position -->
-                
-                        <!-- Summenzeile -->
                         <div id="sumRow" class="grid grid-cols-5 gap-4 px-3 py-3 bg-gray-50 font-semibold">
                             <span class="col-span-4 text-right">
                                 Gesamtpreis
@@ -172,22 +158,15 @@
             </div>
         </div>
         
-
-        <!-- ================= Aktionen ================= -->
         <div class="flex justify-center gap-4">
             <a href="/home">
-                <button class="px-6 py-2 rounded bg-[#E74C3C] text-white">
-                    Termin löschen
+                <button class="px-6 py-2 rounded bg-gray-600 text-white hover:opacity-80 transition">
+                    Abbrechen
                 </button>
             </a>
             <button onclick="saveData()" class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold">
                 Änderung speichern
             </button>
-            <a href="/protocol">
-                <button class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold">
-                    Protokoll schreiben
-                </button>
-            </a>
         </div>
 
     </section>
@@ -359,7 +338,6 @@
     teilnehmerList.addEventListener("change", e => {
         if (!e.target.classList.contains("teilnehmer-checkbox")) return;
 
-        // alle anderen Checkboxen deaktivieren
         teilnehmerList
             .querySelectorAll(".teilnehmer-checkbox")
             .forEach(cb => {
@@ -369,7 +347,6 @@
 
     function collectTerminData() {
 
-        /* ================= Termindaten ================= */
         const terminSection = document
             .querySelector("h2")
             .closest(".bg-white");
@@ -384,7 +361,6 @@
         const start = datetimeInputs[0]?.value;
         const ende = datetimeInputs[1]?.value;
 
-        /* ================= Validierung ================= */
         if (!terminart_id || terminart_id === "Bitte auswählen") {
             throw new Error("Bitte eine Terminart auswählen.");
         }
@@ -396,7 +372,6 @@
             throw new Error("Start darf nicht nach Ende liegen.");
         }
 
-        /* ================= Kontakte ================= */
         const kontakte = [];
 
         document
@@ -414,7 +389,6 @@
                 });
             });
 
-        /* ================= Produkte (optional) ================= */
         const produkte = [];
         document
             .querySelectorAll("#positionList [data-produkt-id]")
@@ -458,7 +432,7 @@
                     art_id: data.termindaten.terminart_id,
                     start: data.termindaten.start,
                     ende: data.termindaten.ende,
-                    uid: uid
+                    uid: "5VHdpF9dgWUx0wLpHP1K99DQnXX2"
                 })
             });
 
@@ -480,7 +454,7 @@
             });
 
             let haupt = "";
-            /* ================= 3. TEILNEHMER ================= */
+
             for (const kontakt of data.kontakte) {
                 console.log(kontakt)
                 if (kontakt.ausgewaehlt){
@@ -504,7 +478,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     bezeichnung: `Termin ${terminId}`,
-                    wichtigkeit_id: 2,      // Platzhalter
+                    wichtigkeit_id: 2, 
                     kontakt_id: haupt,
                     termin_id: terminId
                 })
@@ -514,7 +488,6 @@
             const auftrag = await auftragRes.json();
 
             if (data.produkte.length > 0) {
-                // Auftragspositionen
                 for (const produktId of data.produkte) {
                     await fetch("http://127.0.0.1:5000/api/auftragsposition", {
                         method: "POST",
@@ -534,6 +507,8 @@
 
 
             alert("Termin erfolgreich gespeichert 🎉");
+
+            window.location.href = "/home"
 
         } catch (err) {
             alert(err.message);

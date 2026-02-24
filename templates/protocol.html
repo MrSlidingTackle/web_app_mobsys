@@ -8,18 +8,14 @@
 
 <body class="bg-black min-h-screen">
 
-<!-- Taskleiste -->
 <header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6">
     <h1 class="text-white text-xl font-semibold">
         Details
     </h1>
 </header>
 
-<!-- Content -->
 <main class="pt-28 flex justify-center pb-20">
     <section class="bg-gray-400 w-4/5 max-w-4xl rounded-lg p-6 space-y-6">
-
-        <!-- ================= Termindaten ================= -->
         <div class="bg-white rounded-md p-5 space-y-4">
             <h2 class="text-xl font-bold text-gray-800">Termindaten</h2>
 
@@ -54,8 +50,6 @@
             </div>
         </div>
         
-
-        <!-- ================= Aktionen ================= -->
         <div class="flex justify-center gap-4">
             <a href="/details/{{ id }}">
                 <button id="btnClose" class="px-6 py-2 rounded bg-gray-600 text-white" value="{{ id }}">
@@ -112,6 +106,8 @@
 
             console.log("Protokoll erfolgreich aktualisiert:", result);
             alert("Protokoll gespeichert");
+
+            window.location.href = "/home"
         } catch (error) {
             console.error("Netzwerkfehler:", error);
             alert("Server nicht erreichbar");

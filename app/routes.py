@@ -51,6 +51,7 @@ def details(id):
     auftragspositionen = requests.get("http://127.0.0.1:5000/api/auftragsposition").json()["order_items"]
     terminTeilnehmer = []
     positionen = []
+    auftrag = ""
 
     for element in teilnehmer:
         if element["termin_id"] == int(id):
