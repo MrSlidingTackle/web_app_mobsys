@@ -241,11 +241,9 @@
                     Abbrechen
                 </button>
             </a>
-            <a href="/home">
-                <button class="px-6 py-2 rounded bg-[#E74C3C] text-white hover:opacity-80 transition">
-                    Termin löschen
-                </button>
-            </a>
+            <button id="deleteBtn" class="px-6 py-2 rounded bg-[#E74C3C] text-white hover:opacity-80 transition">
+                Termin löschen
+            </button>
             <button onclick="saveTerminToBackend(1)" class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:opacity-80 transition">
                 Änderung speichern
             </button>
@@ -551,7 +549,7 @@
                     art_id: data.termindaten.terminart_id,
                     start: data.termindaten.start,
                     ende: data.termindaten.ende,
-                    uid: uid
+                    uid: "5VHdpF9dgWUx0wLpHP1K99DQnXX2"
                 })
             });
 
@@ -571,9 +569,6 @@
                 if (teilnehmer.checkbox == true) [
                     haupt = teilnehmer
                 ]
-                console.log(teilnehmer.kontakt_id);
-                console.log(terminId);
-                console.log(teilnehmer.ausgewaehlt);
 
                 await fetch("http://127.0.0.1:5001/api/teilnehmer", {
                     method: "POST",
@@ -630,6 +625,44 @@
             alert(err.message);
             console.error(err);
         }
+    };
+
+    document.getElementById("deleteBtn").addEventListener("click", e => {
+        if (confirm("Sind sie sicher, dass sie den Termin löschen wollen?") == true) {
+            deleteAppointment();
+        }
+    });
+
+    async function deleteAppointment() {
+        try {
+            for (const position of allePositionen) {
+                await fetch("http://127.0.0.1:5001/api/auftragsposition/"+position.id, {
+                    method: "DELETE"
+                });
+            };
+
+            await fetch("http://127.0.0.1:5001/api/auftrag/"+auftragDaten.id, {
+                method: "DELETE"
+            });
+
+            for (const teilnehmer of alleTeilnehmer) {
+                await fetch("http://127.0.0.1:5001/api/teilnehmer/"+teilnehmer.id, {
+                    method: "DELETE",
+                });
+            };
+
+            await fetch("http://127.0.0.1:5001/api/termine/"+terminId, {
+                method: "DELETE"
+            });
+
+            alert("Termin erfolgreich gelöscht!")
+
+            window.location.href = "/home"
+        }
+        catch (err) {
+                alert(err.message);
+                console.error(err);
+            }
     }
 </script>
     

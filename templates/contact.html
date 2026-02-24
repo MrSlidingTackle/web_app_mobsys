@@ -273,6 +273,8 @@
             if (!kontaktRes.ok) throw new Error("Kontakt konnte nicht gespeichert werden");
 
             alert("Kontakt erfolgreich gespeichert");
+
+            window.location.href = "/home";
         } catch (err) {
             alert(err.message);
             console.error(err);

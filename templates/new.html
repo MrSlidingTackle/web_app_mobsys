@@ -445,7 +445,7 @@
                     art_id: data.termindaten.terminart_id,
                     start: data.termindaten.start,
                     ende: data.termindaten.ende,
-                    uid: uid
+                    uid: "5VHdpF9dgWUx0wLpHP1K99DQnXX2"
                 })
             });
 
@@ -517,6 +517,8 @@
             // KI-Komponente rerank wichtigkeit
 
             alert("Termin erfolgreich gespeichert 🎉");
+
+            window.location.href = "/home"
 
         } catch (err) {
             alert(err.message);

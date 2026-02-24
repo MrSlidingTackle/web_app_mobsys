@@ -112,6 +112,8 @@
 
             console.log("Protokoll erfolgreich aktualisiert:", result);
             alert("Protokoll gespeichert");
+
+            window.location.href = "/home"
         } catch (error) {
             console.error("Netzwerkfehler:", error);
             alert("Server nicht erreichbar");
