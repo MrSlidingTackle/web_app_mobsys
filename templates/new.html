@@ -164,8 +164,8 @@
                     Abbrechen
                 </button>
             </a>
-            <button onclick="saveData(2)" class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold hover:opacity-80 transition">
-                Termin anlegen
+            <button onclick="saveData()" class="px-6 py-2 rounded bg-[#4F81BD] text-white font-semibold">
+                Änderung speichern
             </button>
         </div>
 
@@ -410,11 +410,20 @@
         };
     };
 
-    async function saveData(uid) {
+    async function saveData() {
         try {
             const data = collectTerminData();
+            let uid = ""
+            const cooks = document.cookie.split("; ");
+            for (const cookie of cooks){
+                if (cookie.startsWith("token")) {
+                    uid = cookie.split("=")[1];
+                    break;
+                }
+            } 
 
-            const terminRes = await fetch("http://127.0.0.1:5001/api/termine", {
+            /* ================= 1. TERMIN ================= */
+            const terminRes = await fetch("http://127.0.0.1:5000/api/termine", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -431,7 +440,8 @@
             const termin = await terminRes.json();
             const terminId = termin.id;
 
-            await fetch("http://127.0.0.1:5001/api/protokoll", {
+            /* ================= 2. PROTOKOLL (Platzhalter) ================= */
+            await fetch("http://127.0.0.1:5000/api/protokoll", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -450,7 +460,7 @@
                 if (kontakt.ausgewaehlt){
                     haupt = kontakt["kontakt_id"]
                 };
-                await fetch("http://127.0.0.1:5001/api/teilnehmer", {
+                await fetch("http://127.0.0.1:5000/api/teilnehmer", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -461,7 +471,9 @@
                 });
             }
 
-            const auftragRes = await fetch("http://127.0.0.1:5001/api/auftrag", {
+            /* ================= 4. AUFTRAG + POSITIONEN (optional) ================= */
+            // Auftrag → erster Kontakt als Referenz
+            const auftragRes = await fetch("http://127.0.0.1:5000/api/auftrag", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -477,7 +489,7 @@
 
             if (data.produkte.length > 0) {
                 for (const produktId of data.produkte) {
-                    await fetch("http://127.0.0.1:5001/api/auftragsposition", {
+                    await fetch("http://127.0.0.1:5000/api/auftragsposition", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -487,6 +499,12 @@
                     });
                 }
             };
+
+            // KI-Komponente rerank wichtigkeit
+            const kiResl = await fetch("http://127.0.0.1:11787/api/jobs/start", {
+                method: "POST"
+            })
+
 
             alert("Termin erfolgreich gespeichert 🎉");
 

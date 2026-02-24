@@ -518,7 +518,8 @@
         try {
             const data = collectTerminData();
 
-            const terminRes = await fetch("http://127.0.0.1:5001/api/termine/"+terminId, {
+            /* ================= 1. TERMIN ================= */
+            const terminRes = await fetch("http://127.0.0.1:5000/api/termine/"+terminId, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -535,7 +536,7 @@
             const termin = await terminRes.json();
 
             for (const teilnehmer of alleTeilnehmer) {
-                await fetch("http://127.0.0.1:5001/api/teilnehmer/"+teilnehmer["id"], {
+                await fetch("http://127.0.0.1:5000/api/teilnehmer/"+teilnehmer["id"], {
                     method: "DELETE",
                 });
             }
@@ -547,7 +548,7 @@
                     haupt = teilnehmer
                 ]
 
-                await fetch("http://127.0.0.1:5001/api/teilnehmer", {
+                await fetch("http://127.0.0.1:5000/api/teilnehmer", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -560,7 +561,8 @@
 
             if (data.produkte.length > 0) {
 
-                const auftragRes = await fetch("http://127.0.0.1:5001/api/auftrag/"+auftragDaten.id, {
+                // Auftrag → erster Kontakt als Referenz
+                const auftragRes = await fetch("http://127.0.0.1:5000/api/auftrag/"+auftragDaten.id, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -574,13 +576,13 @@
                 const auftrag = await auftragRes.json();
 
                 for (const position of allePositionen) {
-                    await fetch("http://127.0.0.1:5001/api/auftragsposition/"+position.id, {
+                    await fetch("http://127.0.0.1:5000/api/auftragsposition/"+position.id, {
                         method: "DELETE"
                     });
                 }
 
                 for (const produktId of data.produkte) {
-                    await fetch("http://127.0.0.1:5001/api/auftragsposition", {
+                    await fetch("http://127.0.0.1:5000/api/auftragsposition", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -590,6 +592,12 @@
                     });
                 }
             };
+
+            // KI-Komponente rerank wichtigkeit
+            const kiResl = await fetch("http://127.0.0.1:11787/api/jobs/start", {
+                method: "POST"
+            })
+
 
             alert("Termin erfolgreich gespeichert 🎉");
 
