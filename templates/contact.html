@@ -8,18 +8,15 @@
 
 <body class="bg-black min-h-screen">
 
-<!-- Taskleiste -->
 <header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6">
     <h1 class="text-white text-xl font-semibold">
         Kontakt anlegen
     </h1>
 </header>
 
-<!-- Content -->
 <main class="pt-28 flex justify-center pb-20">
     <section class="bg-gray-400 w-4/5 max-w-4xl rounded-lg p-6 space-y-6">
 
-        <!-- ================= Kontakte & Teilnehmer ================= -->
         <div class="bg-white rounded-md p-5 space-y-5">
             <h2 class="text-xl font-bold text-gray-800">Neuer Kontakt</h2>
 
@@ -30,7 +27,6 @@
                     <input type="text" class="w-full border rounded px-3 py-2">
                 </div>
 
-                <!-- Adresse -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block font-medium text-gray-700">PLZ</label>
@@ -63,7 +59,6 @@
                     </div>
                 </div>
 
-                <!-- Rolle -->
                 <div>
                     <label class="block font-medium text-gray-700">Rolle</label>
                     <select id="rolleSelect" class="w-full border rounded px-3 py-2">
@@ -73,7 +68,6 @@
                     </select>
                 </div>
 
-                <!-- Unternehmen -->
                 <div id="unternehmenCard" class="border rounded-md p-4 space-y-2">
                     <h3 class="font-semibold text-gray-700 text-sm">
                         Angaben für Unternehmen
@@ -85,7 +79,6 @@
                     </div>
                 </div>
 
-                <!-- Person -->
                 <div id="personCard" class="border rounded-md p-4 space-y-2">
                     <h3 class="font-semibold text-gray-700 text-sm">
                         Angaben für Person
@@ -107,7 +100,6 @@
             </div>
         </div>
 
-        <!-- ================= Aktionen ================= -->
         <div class="flex justify-center gap-4">
             <a href="/home">
                 <button class="px-6 py-2 rounded bg-gray-600 text-white hover:opacity-80 transition">
@@ -155,7 +147,6 @@
 
     rolleSelect.addEventListener("change", updateRolle);
 
-    // Initialzustand
     updateRolle();
 
     async function saveContact() {
@@ -176,9 +167,6 @@
                 titel
             ] = inputs;
 
-            // ------------------------
-            // Pflichtfelder
-            // ------------------------
             const requiredBase = {
                 Name: name.value,
                 PLZ: plz.value,
@@ -195,9 +183,6 @@
 
             if (!rolle) throw new Error("Rolle muss ausgewählt sein");
 
-            // ------------------------
-            // Adresse
-            // ------------------------
             const adresseRes = await fetch("http://127.0.0.1:5001/api/adresse", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -215,9 +200,6 @@
             let unternehmenId = null;
             let personId = null;
 
-            // ------------------------
-            // Unternehmen / Person
-            // ------------------------
             if (rolle === "Unternehmen") {
                 if (!umsatz.value.trim()) throw new Error("Umsatz fehlt");
 
@@ -254,9 +236,6 @@
                 personId = Number((await res.json()).id);
             }
 
-            // ------------------------
-            // Kontakt
-            // ------------------------
             const kontaktRes = await fetch("http://127.0.0.1:5001/api/kontakt", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

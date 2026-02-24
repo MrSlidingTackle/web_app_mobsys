@@ -7,19 +7,15 @@
 </head>
 
 <body class="bg-black min-h-screen">
-
-<!-- Taskleiste -->
+    
 <header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6">
     <h1 class="text-white text-xl font-semibold">
         Termin anleigen
     </h1>
 </header>
 
-<!-- Content -->
 <main class="pt-28 flex justify-center pb-20">
     <section class="bg-gray-400 w-4/5 max-w-4xl rounded-lg p-6 space-y-6">
-
-        <!-- ================= Termindaten ================= -->
         <div class="bg-white rounded-md p-5 space-y-4">
             <h2 class="text-xl font-bold text-gray-800">Termindaten</h2>
 
@@ -58,7 +54,6 @@
             </div>
         </div>
 
-        <!-- ================= Kontakte & Teilnehmer ================= -->
         <div class="bg-white rounded-md p-5 space-y-5">
             <h2 class="text-xl font-bold text-gray-800">Teilnehmer</h2>
 
@@ -88,7 +83,6 @@
                     </div>
                 </div>
 
-                <!-- Teilnehmer ListView -->
                 <div>
                     <label class="block font-medium text-gray-700 mb-2">
                         Hinzugefügte Kontakte
@@ -102,7 +96,6 @@
             </div>
         </div>
 
-        <!-- ================= Auftrag / Produkte ================= -->
         <div class="bg-white rounded-md p-5 space-y-4">
             <h2 class="text-xl font-bold text-gray-800">
                 Produkte (optional)
@@ -110,7 +103,6 @@
         
             <div class="space-y-4 text-sm">
         
-                <!-- Produkt auswählen -->
                 <div>
                     <label class="block font-medium text-gray-700 mb-1">
                         Produkt auswählen
@@ -136,7 +128,6 @@
                     </div>
                 </div>
         
-                <!-- Positionen ListView -->
                 <div>
                     <label class="block font-medium text-gray-700 mb-2">
                         Positionen
@@ -144,7 +135,6 @@
                 
                     <div id="positionList" class="border rounded-md divide-y">
                 
-                        <!-- Kopfzeile -->
                         <div class="grid grid-cols-5 gap-4 px-3 py-2 bg-gray-100 font-medium">
                             <span>Produkt</span>
                             <span>Menge</span>
@@ -153,10 +143,6 @@
                             <span class="text-right">Aktion</span>
                         </div>
                         
-                
-                        <!-- Position -->
-                
-                        <!-- Summenzeile -->
                         <div id="sumRow" class="grid grid-cols-5 gap-4 px-3 py-3 bg-gray-50 font-semibold">
                             <span class="col-span-4 text-right">
                                 Gesamtpreis
@@ -172,8 +158,6 @@
             </div>
         </div>
         
-
-        <!-- ================= Aktionen ================= -->
         <div class="flex justify-center gap-4">
             <a href="/home">
                 <button class="px-6 py-2 rounded bg-gray-600 text-white hover:opacity-80 transition">
@@ -354,7 +338,6 @@
     teilnehmerList.addEventListener("change", e => {
         if (!e.target.classList.contains("teilnehmer-checkbox")) return;
 
-        // alle anderen Checkboxen deaktivieren
         teilnehmerList
             .querySelectorAll(".teilnehmer-checkbox")
             .forEach(cb => {
@@ -364,7 +347,6 @@
 
     function collectTerminData() {
 
-        /* ================= Termindaten ================= */
         const terminSection = document
             .querySelector("h2")
             .closest(".bg-white");
@@ -379,7 +361,6 @@
         const start = datetimeInputs[0]?.value;
         const ende = datetimeInputs[1]?.value;
 
-        /* ================= Validierung ================= */
         if (!terminart_id || terminart_id === "Bitte auswählen") {
             throw new Error("Bitte eine Terminart auswählen.");
         }
@@ -391,7 +372,6 @@
             throw new Error("Start darf nicht nach Ende liegen.");
         }
 
-        /* ================= Kontakte ================= */
         const kontakte = [];
 
         document
@@ -409,7 +389,6 @@
                 });
             });
 
-        /* ================= Produkte (optional) ================= */
         const produkte = [];
         document
             .querySelectorAll("#positionList [data-produkt-id]")
@@ -435,7 +414,6 @@
         try {
             const data = collectTerminData();
 
-            /* ================= 1. TERMIN ================= */
             const terminRes = await fetch("http://127.0.0.1:5001/api/termine", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -453,7 +431,6 @@
             const termin = await terminRes.json();
             const terminId = termin.id;
 
-            /* ================= 2. PROTOKOLL (Platzhalter) ================= */
             await fetch("http://127.0.0.1:5001/api/protokoll", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -467,7 +444,7 @@
             });
 
             let haupt = "";
-            /* ================= 3. TEILNEHMER ================= */
+
             for (const kontakt of data.kontakte) {
                 console.log(kontakt)
                 if (kontakt.ausgewaehlt){
@@ -484,14 +461,12 @@
                 });
             }
 
-            /* ================= 4. AUFTRAG + POSITIONEN (optional) ================= */
-            // Auftrag → erster Kontakt als Referenz
             const auftragRes = await fetch("http://127.0.0.1:5001/api/auftrag", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     bezeichnung: `Termin ${terminId}`,
-                    wichtigkeit_id: 2,      // Platzhalter
+                    wichtigkeit_id: 2, 
                     kontakt_id: haupt,
                     termin_id: terminId
                 })
@@ -501,7 +476,6 @@
             const auftrag = await auftragRes.json();
 
             if (data.produkte.length > 0) {
-                // Auftragspositionen
                 for (const produktId of data.produkte) {
                     await fetch("http://127.0.0.1:5001/api/auftragsposition", {
                         method: "POST",
@@ -513,8 +487,6 @@
                     });
                 }
             };
-
-            // KI-Komponente rerank wichtigkeit
 
             alert("Termin erfolgreich gespeichert 🎉");
 

@@ -42,7 +42,7 @@ class TestLoginRequired:
     def test_no_redirect_with_token(self, authed_client, url):
         """With a valid token cookie, all protected routes should NOT return 302
         (status 200 is verified in the dedicated test classes below)."""
-        # We need side_effect stubs to satisfy any API calls the routes make.
+
         def _stub(req_url, *args, **kwargs):
             return mock_response({
                 "appointments": [],

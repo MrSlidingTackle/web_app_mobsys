@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <title>Home</title>
 
-    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-black min-h-screen">
 
-    <!-- Taskleiste -->
     <header class="fixed top-0 left-0 w-full h-20 bg-[#004080] z-50 flex items-center px-6 space-x-4">
         <span class="text-white font-semibold text-lg">
             Taskleiste
@@ -20,12 +18,9 @@
         </a>
     </header>
 
-    <!-- Content Wrapper (Abstand wegen fixer Taskleiste) -->
     <main class="pt-28 flex justify-center">
-        
-        <!-- Graue Box -->
+
         <section class="bg-gray-400 w-3/5 rounded-lg p-6 space-y-4">
-            <!-- Plus Button -->
             <div class="flex justify-center pt-4">
                 <button
                     class="w-14 h-14 rounded-full bg-[#4F81BD] text-white text-3xl font-bold
@@ -36,17 +31,14 @@
                     <a href="/new" class="mb-2">+</a>
                 </button>
             </div> 
-            <!-- Weiße Boxen -->
             {% for termin in termine %}
             <a href="/details/{{termin.id}}" class="p-5">
                 <div class="bg-white rounded-md p-5 space-y-4 hover:scale-110 transition shadow-xl">
         
-                    <!-- Überschrift -->
                     <h2 class="text-lg font-bold text-gray-800 text-center">
                         {{ termin.title }}
                     </h2>
                 
-                    <!-- Tabelle -->
                     <table class="w-full text-sm">
                         <tbody class="divide-y divide-gray-200">
                             <tr>
