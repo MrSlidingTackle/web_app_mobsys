@@ -183,9 +183,6 @@
 
             if (!rolle) throw new Error("Rolle muss ausgewählt sein");
 
-            // ------------------------
-            // Adresse
-            // ------------------------
             const adresseRes = await fetch("http://127.0.0.1:5000/api/adresse", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -239,9 +236,6 @@
                 personId = Number((await res.json()).id);
             }
 
-            // ------------------------
-            // Kontakt
-            // ------------------------
             const kontaktRes = await fetch("http://127.0.0.1:5000/api/kontakt", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

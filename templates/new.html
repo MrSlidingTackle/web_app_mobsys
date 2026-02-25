@@ -153,7 +153,6 @@
                         </div>                        
                     </div>
                 </div>
-                
         
             </div>
         </div>
@@ -422,7 +421,6 @@
                 }
             } 
 
-            /* ================= 1. TERMIN ================= */
             const terminRes = await fetch("http://127.0.0.1:5000/api/termine", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -440,7 +438,6 @@
             const termin = await terminRes.json();
             const terminId = termin.id;
 
-            /* ================= 2. PROTOKOLL (Platzhalter) ================= */
             await fetch("http://127.0.0.1:5000/api/protokoll", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -471,8 +468,6 @@
                 });
             }
 
-            /* ================= 4. AUFTRAG + POSITIONEN (optional) ================= */
-            // Auftrag → erster Kontakt als Referenz
             const auftragRes = await fetch("http://127.0.0.1:5000/api/auftrag", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -500,7 +495,6 @@
                 }
             };
 
-            // KI-Komponente rerank wichtigkeit
             const kiResl = await fetch("http://127.0.0.1:11787/api/jobs/start", {
                 method: "POST"
             })

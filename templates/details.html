@@ -426,25 +426,11 @@
 
     function collectTerminData() {
 
-        const terminartSelect = document.querySelector(
-            'select'
-        );
-
-        const titelInput = document.querySelectorAll(
-            'input[type="text"]'
-        )[0];
-
-        const ortInput = document.querySelectorAll(
-            'input[type="text"]'
-        )[1];
-
-        const startInput = document.querySelectorAll(
-            'input[type="datetime-local"]'
-        )[0];
-
-        const endeInput = document.querySelectorAll(
-            'input[type="datetime-local"]'
-        )[1];
+        const terminartSelect = document.querySelector('select');
+        const titelInput = document.querySelectorAll('input[type="text"]')[0];
+        const ortInput = document.querySelectorAll('input[type="text"]')[1];
+        const startInput = document.querySelectorAll('input[type="datetime-local"]')[0];
+        const endeInput = document.querySelectorAll('input[type="datetime-local"]')[1];
 
         const terminart_id = terminartSelect?.value;
         const titel = titelInput?.value.trim();
@@ -518,7 +504,6 @@
         try {
             const data = collectTerminData();
 
-            /* ================= 1. TERMIN ================= */
             const terminRes = await fetch("http://127.0.0.1:5000/api/termine/"+terminId, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -561,7 +546,6 @@
 
             if (data.produkte.length > 0) {
 
-                // Auftrag → erster Kontakt als Referenz
                 const auftragRes = await fetch("http://127.0.0.1:5000/api/auftrag/"+auftragDaten.id, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
@@ -593,11 +577,9 @@
                 }
             };
 
-            // KI-Komponente rerank wichtigkeit
             const kiResl = await fetch("http://127.0.0.1:11787/api/jobs/start", {
                 method: "POST"
             })
-
 
             alert("Termin erfolgreich gespeichert 🎉");
 
@@ -646,6 +628,5 @@
     }
 </script>
     
-
 </body>
 </html>
